@@ -173,11 +173,20 @@ set(LIBPD_UTILS_SOURCES
     libpd_wrapper/util/z_queued.h
 )
 
+set(LIBPD_RS_BUNDLED_EXTERNALS_SOURCES
+    libpd_wrapper/libpd_rs_bundled_externals/header/setup_libpd_rs_bundled.h
+    libpd_wrapper/libpd_rs_bundled_externals/src/setup_libpd_rs_bundled.c
+    libpd_wrapper/libpd_rs_bundled_externals/externals/freeverb~.c
+)
+
+
 source_group(pd         FILES ${PD_SOURCES})
 source_group(pdextra    FILES ${PD_EXTRA_SOURCES})
 source_group(libpd      FILES ${LIBPD_SOURCES})
 source_group(libpdutils FILES ${LIBPD_UTILS_SOURCES})
+source_group(libpd_rs_bundled FILES ${LIBPD_RS_BUNDLED_EXTERNALS_SOURCES})
 
+# TODO: Do we need to add here?
 include_directories(libpd_wrapper)
 include_directories(pure-data/src)
 
@@ -190,6 +199,7 @@ if(PD_UTILS)
 endif()
 if(PD_EXTRA)
     list(APPEND SOURCE_FILES ${PD_EXTRA_SOURCES})
+    list(APPEND SOURCE_FILES ${LIBPD_RS_BUNDLED_EXTERNALS_SOURCES})
 endif()
 
 add_library(libpd_static STATIC ${SOURCE_FILES})
