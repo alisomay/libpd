@@ -60,9 +60,11 @@ int sys_pollgui(void);
   void pique_setup(void);
   void sigmund_tilde_setup(void);
   void stdout_setup(void);
+  // For libpd-rs
+  void setup_libpd_rs_bundled(void);
 #endif
 
-static PERTHREAD t_atom *s_argv = NULL;
+      static PERTHREAD t_atom *s_argv = NULL;
 static PERTHREAD t_atom *s_curr = NULL;
 static PERTHREAD int s_argm = 0;
 static PERTHREAD int s_argc = 0;
@@ -115,6 +117,7 @@ int libpd_init(void) {
   pique_setup();
   sigmund_tilde_setup();
   stdout_setup();
+  setup_libpd_rs_bundled();
 #endif
 #ifndef LIBPD_NO_NUMERIC
   setlocale(LC_NUMERIC, "C");
