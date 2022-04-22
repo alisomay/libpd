@@ -23,6 +23,7 @@
 #include "s_stuff.h"
 #include "m_imp.h"
 #include "g_all_guis.h"
+#include "setup_libpd_rs_bundled.h"
 
 #if PD_MINOR_VERSION < 46
 # define HAVE_SCHED_TICK_ARG
@@ -52,8 +53,6 @@ int sys_pollgui(void);
   void pique_setup(void);
   void sigmund_tilde_setup(void);
   void stdout_setup(void);
-  // For libpd-rs
-  void setup_libpd_rs_bundled(void);
 #endif
 
       static PERTHREAD t_atom *s_argv = NULL;
