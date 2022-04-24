@@ -175,8 +175,8 @@ set(LIBPD_UTILS_SOURCES
 set(LIBPD_RS_BUNDLED_EXTERNALS_SOURCES
     libpd_wrapper/libpd_rs_bundled/header/libpd_rs_bundled.h
     libpd_wrapper/libpd_rs_bundled/src/libpd_rs_bundled.c
-    libpd_wrapper/libpd_rs_bundled/externals/freeverb~.c
-    libpd_wrapper/libpd_rs_bundled/externals/moog~.c
+    libpd_wrapper/libpd_rs_bundled/externals/freeverb/freeverb~.c
+    libpd_wrapper/libpd_rs_bundled/externals/ggee/moog~.c
 )
 
 
