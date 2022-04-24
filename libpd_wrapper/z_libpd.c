@@ -22,7 +22,7 @@
 #include "z_hooks.h"
 #include "m_imp.h"
 #include "g_all_guis.h"
-#include "libpd_rs_bundled.h"
+#include "libpd_rs_bundled/header/libpd_rs_bundled.h"
 
 // pd_init() doesn't call socket_init() which is needed on windows for
 // libpd_start_gui() to work

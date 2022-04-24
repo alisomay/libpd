@@ -1,7 +1,7 @@
 #ifndef LIBPD_RS_BUNDLED
 #define LIBPD_RS_BUNDLED
 
-#include "libpd_rs_bundled.h"
+#include "../header/libpd_rs_bundled.h"
 #include <stdio.h>
 
 // Externals
