@@ -173,9 +173,10 @@ set(LIBPD_UTILS_SOURCES
 )
 
 set(LIBPD_RS_BUNDLED_EXTERNALS_SOURCES
-    libpd_wrapper/libpd_rs_bundled_externals/header/setup_libpd_rs_bundled.h
-    libpd_wrapper/libpd_rs_bundled_externals/src/setup_libpd_rs_bundled.c
+    libpd_wrapper/libpd_rs_bundled_externals/header/libpd_rs_bundled.h
+    libpd_wrapper/libpd_rs_bundled_externals/src/libpd_rs_bundled.c
     libpd_wrapper/libpd_rs_bundled_externals/externals/freeverb~.c
+    libpd_wrapper/libpd_rs_bundled_externals/externals/moog~.c
 )
 
 
@@ -185,7 +186,6 @@ source_group(libpd      FILES ${LIBPD_SOURCES})
 source_group(libpdutils FILES ${LIBPD_UTILS_SOURCES})
 source_group(libpd_rs_bundled FILES ${LIBPD_RS_BUNDLED_EXTERNALS_SOURCES})
 
-# TODO: Do we need to add here?
 include_directories(libpd_wrapper)
 include_directories(pure-data/src)
 

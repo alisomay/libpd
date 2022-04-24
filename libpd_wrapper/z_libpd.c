@@ -116,7 +116,7 @@ int libpd_init(void) {
   pique_setup();
   sigmund_tilde_setup();
   stdout_setup();
-  setup_libpd_rs_bundled();
+  libpd_rs_bundled_setup();
 #endif
 #ifndef LIBPD_NO_NUMERIC
   setlocale(LC_NUMERIC, "C");
