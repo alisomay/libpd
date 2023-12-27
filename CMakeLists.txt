@@ -5,8 +5,10 @@ include(CMakeDependentOption)
 include(CheckLibraryExists)
 include(CheckIncludeFile)
 
+option(LIBPD_CRT_LINKAGE "Override MSVC C Runtime linkage: 'static' for /MT, 'dynamic' for /MD" "")
 option(PD_UTILS  "Compile utilities" ON)
 option(PD_EXTRA  "Compile extras" ON)
+option(LIBPD_RS_EXTRA "Include libpd_rs bundled externals" OFF)
 option(PD_MULTI  "Compile with multiple instance support" OFF)
 option(PD_LOCALE "Set the LC_NUMERIC number format to the default C locale" ON)
 option(PD_DEFINE_EXTERN "Define EXTERN to a custom string for special linking purposes" "")
@@ -46,6 +48,18 @@ if (MSVC)
     if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
         # Select appropriate long int type on 64-bit Windows
         add_compile_definitions("PD_LONGINTTYPE=long long")
+    endif()
+
+    # We need to be able to set this for rust to link correctly
+    # Also pthreads support dynamic linking on windows
+    if(LIBPD_CRT_LINKAGE)
+        if(LIBPD_CRT_LINKAGE STREQUAL "dynamic")
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+        elseif(LIBPD_CRT_LINKAGE STREQUAL "static")
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        else()
+            message(FATAL_ERROR "LIBPD_CRT_LINKAGE must be either 'static' or 'dynamic'")
+        endif()
     endif()
 else()
     set(CMAKE_C_FLAGS         "${CMAKE_C_FLAGS} -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast")
@@ -213,10 +227,19 @@ set(LIBPD_UTILS_SOURCES
     libpd_wrapper/util/z_queued.h
 )
 
+set(LIBPD_RS_BUNDLED_EXTERNALS_SOURCES
+    libpd_wrapper/libpd_rs_bundled/header/libpd_rs_bundled.h
+    libpd_wrapper/libpd_rs_bundled/src/libpd_rs_bundled.c
+    libpd_wrapper/libpd_rs_bundled/externals/freeverb/freeverb~.c
+    libpd_wrapper/libpd_rs_bundled/externals/ggee/moog~.c
+)
+
+
 source_group(pd         FILES ${PD_SOURCES})
 source_group(pdextra    FILES ${PD_EXTRA_SOURCES})
 source_group(libpd      FILES ${LIBPD_SOURCES})
 source_group(libpdutils FILES ${LIBPD_UTILS_SOURCES})
+source_group(libpd_rs_bundled FILES ${LIBPD_RS_BUNDLED_EXTERNALS_SOURCES})
 
 # set the output library name for libpd depending on the settings
 set(LIBPD_OUTPUT_NAME     pd)
@@ -235,6 +258,9 @@ endif()
 if(PD_EXTRA)
     list(APPEND SOURCE_FILES ${PD_EXTRA_SOURCES})
 endif()
+if(LIBPD_RS_EXTRA)
+    list(APPEND SOURCE_FILES ${LIBPD_RS_BUNDLED_EXTERNALS_SOURCES})
+endif()
 
 add_library(libpd_private_settings INTERFACE)
 add_library(libpd_public_settings INTERFACE)
@@ -244,7 +270,6 @@ if(LIBPD_STATIC)
       PRIVATE libpd_private_settings
       PUBLIC libpd_public_settings
   )
-
   if (WIN32)
       set_target_properties(libpd_static PROPERTIES OUTPUT_NAME ${LIBPD_OUTPUT_NAME}-static)
   else()
@@ -295,6 +320,7 @@ target_compile_definitions(libpd_public_settings
     $<$<BOOL:${HAVE_MACHINE_ENDIAN_H}>:HAVE_MACHINE_ENDIAN_H=1>
     $<$<BOOL:${HAVE_UNISTD_H}>:HAVE_UNISTD_H=1>
     $<$<BOOL:${PD_EXTRA}>:LIBPD_EXTRA=1>
+    $<$<BOOL:${LIBPD_RS_EXTRA}>:LIBPD_RS_EXTRA=1>
     $<$<BOOL:${PD_MULTI}>:PDINSTANCE=1 PDTHREADS=1>
     $<$<NOT:$<BOOL:${PD_LOCALE}>>:LIBPD_NO_NUMERIC=1>
 )
@@ -332,3 +358,4 @@ if(PD_BUILD_C_EXAMPLES)
     endif()
     add_example(pdtest_thread)
 endif()
+
